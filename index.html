@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nguyên Lý Cốt Lõi</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap');
+    </style>
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', 'Segoe UI', 'Arial', 'Helvetica Neue', sans-serif;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            margin: 0;
+            padding: 40px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .flow-container {
+            position: relative;
+        }
+        .flow-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 4px;
+            height: 0;
+            background: linear-gradient(to bottom, #3498db, #2ecc71, #9b59b6);
+            transform: translateX(-50%);
+            border-radius: 2px;
+            transition: height 2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .flow-container.line-drawn::before {
+            height: 100%;
+        }
+        .step {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+            /* Initial hidden state for scroll animation */
+            opacity: 0;
+            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .step:nth-child(odd) {
+            transform: translateX(80px);
+        }
+        .step:nth-child(even) {
+            transform: translateX(-80px);
+        }
+        .step.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .step:last-child {
+            margin-bottom: 0;
+        }
+        .step .content {
+            width: calc(50% - 70px);
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            border: 2px solid #e0e6ed;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+            cursor: default;
+        }
+        .step .content:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+        .step:nth-child(odd) .content {
+            margin-left: auto;
+            border-left: 5px solid #3498db;
+        }
+        .step:nth-child(even) .content {
+            margin-right: auto;
+            border-left: 5px solid #2ecc71;
+        }
+        .step .icon-container {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            border: 4px solid #f5f7fa;
+            overflow: hidden;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s;
+        }
+        .step.visible .icon-container {
+            transform: translateX(-50%) scale(1);
+        }
+        .step .icon-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .step .icon-container svg {
+            width: 40px;
+            height: 40px;
+            stroke: #2c3e50;
+        }
+        .step-title {
+            font-size: 1.2em;
+            font-weight: 800;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .step-desc {
+            font-size: 1em;
+            line-height: 1.6;
+            color: #555;
+        }
+        .highlight-not {
+            color: #e74c3c;
+            font-weight: 600;
+            text-decoration: line-through;
+            margin-right: 5px;
+        }
+        .highlight-but {
+            color: #27ae60;
+            font-weight: 800;
+            font-size: 1.1em;
+        }
+        /* Pulse glow on icon when visible */
+        @keyframes iconGlow {
+            0%   { box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+            50%  { box-shadow: 0 0 25px rgba(52,152,219,0.45); }
+            100% { box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        }
+        .step.visible .icon-container {
+            animation: iconGlow 2.5s ease-in-out 1s infinite;
+        }
+        /* Title gradient animation */
+        @keyframes gradientShift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        h1 {
+            background: linear-gradient(270deg, #2c3e50, #3498db, #2ecc71, #9b59b6);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 6s ease infinite;
+        }
+        @media print {
+            body {
+                padding: 20px;
+                background: #f5f7fa !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            .step {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+            .step .icon-container {
+                transform: translateX(-50%) scale(1) !important;
+            }
+            .flow-container::before {
+                height: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bản Đồ Tư Duy Cốt Lõi</h1>
+        <div class="flow-container">
+            
+            <div class="step">
+                <div class="icon-container">
+                    <img src="file:///C:/Users/ducnv/.gemini/antigravity/brain/6ee4f484-3e2a-468b-b48d-4c63c48a8fcf/value_creation_1775047880911.png" alt="Value">
+                </div>
+                <div class="content">
+                    <div class="step-title">1. Kiếm Tiền</div>
+                    <div class="step-desc">
+                        Không phải <span class="highlight-not">bán thời gian</span><br>
+                        Mà là <span class="highlight-but">Hành trình Tạo ra giá trị</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="icon-container">
+                    <img src="file:///C:/Users/ducnv/.gemini/antigravity/brain/6ee4f484-3e2a-468b-b48d-4c63c48a8fcf/problem_solving_1775048120981.png" alt="Problem">
+                </div>
+                <div class="content">
+                    <div class="step-title">2. Tạo Ra Giá Trị</div>
+                    <div class="step-desc">
+                        Không phải <span class="highlight-not">cung cấp sức lao động</span><br>
+                        Mà là <span class="highlight-but">Năng lực Giải quyết vấn đề</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="icon-container">
+                    <img src="file:///C:/Users/ducnv/.gemini/antigravity/brain/6ee4f484-3e2a-468b-b48d-4c63c48a8fcf/identifying_needs_1775048162014.png" alt="Needs">
+                </div>
+                <div class="content">
+                    <div class="step-title">3. Giải Quyết Vấn Đề</div>
+                    <div class="step-desc">
+                        Không phải <span class="highlight-not">tự thỏa mãn bản thân</span><br>
+                        Mà là <span class="highlight-but">Khả năng Nhận diện nhu cầu</span> của đám đông
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="icon-container">
+                    <img src="file:///C:/Users/ducnv/.gemini/antigravity/brain/6ee4f484-3e2a-468b-b48d-4c63c48a8fcf/practical_feedback_1775048196869.png" alt="Feedback">
+                </div>
+                <div class="content">
+                    <div class="step-title">4. Nhận Diện Nhu Cầu</div>
+                    <div class="step-desc">
+                        Không phải <span class="highlight-not">chỉ trên lý thuyết</span><br>
+                        Mà là <span class="highlight-but">Phản hồi từ thực tiễn</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="icon-container">
+                    <img src="file:///C:/Users/ducnv/.gemini/antigravity/brain/6ee4f484-3e2a-468b-b48d-4c63c48a8fcf/rapid_iteration_1775048225672.png" alt="Iteration">
+                </div>
+                <div class="content">
+                    <div class="step-title">5. Phản Hồi Từ Thực Tiễn</div>
+                    <div class="step-desc">
+                        Không phải <span class="highlight-not">mài dũa tỉ mỉ</span><br>
+                        Mà là <span class="highlight-but">Lặp lại và cải tiến nhanh chóng</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="icon-container">
+                    <img src="file:///C:/Users/ducnv/.gemini/antigravity/brain/6ee4f484-3e2a-468b-b48d-4c63c48a8fcf/model_validation_1775048275985.png" alt="Validation">
+                </div>
+                <div class="content">
+                    <div class="step-title">6. Lặp Lại Nhanh Chóng</div>
+                    <div class="step-desc">
+                        Không phải <span class="highlight-not">chỉ để bàn giao</span><br>
+                        Mà là <span class="highlight-but">Hành động Kiểm chứng mô hình</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="icon-container">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+                </div>
+                <div class="content">
+                    <div class="step-title">7. Kiểm Chứng Mô Hình</div>
+                    <div class="step-desc">
+                        Không phải <span class="highlight-not">cá nhân làm việc cật lực</span><br>
+                        Mà là <span class="highlight-but">Sao chép thành hệ thống</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="icon-container">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </div>
+                <div class="content">
+                    <div class="step-title">8. Sao Chép Hệ Thống</div>
+                    <div class="step-desc">
+                        Không phải <span class="highlight-not">tích lũy theo đường thẳng</span><br>
+                        Mà là <span class="highlight-but">Phát triển bằng Tư duy đòn bẩy</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+<script>
+    // Draw the vertical timeline line when the container is in view
+    const flowContainer = document.querySelector('.flow-container');
+    const lineObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                flowContainer.classList.add('line-drawn');
+                lineObserver.disconnect();
+            }
+        });
+    }, { threshold: 0.05 });
+    lineObserver.observe(flowContainer);
+
+    // Animate each step when it scrolls into view
+    const steps = document.querySelectorAll('.step');
+    const stepObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+                // Stagger each step slightly
+                setTimeout(() => {
+                    entry.target.classList.add('visible');
+                }, 100);
+                stepObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });
+
+    steps.forEach(step => stepObserver.observe(step));
+</script>
+</body>
+</html>
