@@ -197,6 +197,127 @@
                 height: 100% !important;
             }
         }
+
+        /* ===== RESPONSIVE MOBILE — Vertical Flowchart ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+            .container {
+                padding: 20px 16px;
+                border-radius: 12px;
+            }
+            h1 {
+                font-size: 1.4em;
+                letter-spacing: 1px;
+                margin-bottom: 24px;
+            }
+
+            /* Ẩn đường trục giữa của desktop */
+            .flow-container::before {
+                display: none;
+            }
+
+            /* Mỗi step: hàng ngang — icon bên trái, card bên phải */
+            .step {
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+                justify-content: flex-start;
+                gap: 14px;
+                margin-bottom: 44px;
+                position: relative;
+            }
+            .step:last-child {
+                margin-bottom: 0;
+            }
+
+            /* Đường nối dọc từ icon xuống */
+            .step:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                left: 27px; /* tâm icon 56px = 28px, trừ 1px border */
+                top: 60px;  /* bên dưới icon */
+                bottom: -44px;
+                width: 2px;
+                background: linear-gradient(to bottom, #3498db, #2ecc71);
+                border-radius: 1px;
+            }
+
+            /* Mũi tên tam giác tại đáy đường nối */
+            .step:not(:last-child) .icon-container::after {
+                content: '';
+                position: absolute;
+                bottom: -44px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-left: 6px solid transparent;
+                border-right: 6px solid transparent;
+                border-top: 8px solid #2ecc71;
+                z-index: 2;
+            }
+
+            /* Hiệu ứng: đổi từ slide trái/phải sang fade lên */
+            .step:nth-child(odd),
+            .step:nth-child(even) {
+                transform: translateY(30px);
+            }
+            .step.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* Icon: đặt sang trái, bỏ position absolute của desktop */
+            .step .icon-container {
+                position: relative;
+                left: auto;
+                flex-shrink: 0;
+                width: 56px;
+                height: 56px;
+                transform: scale(0);
+                margin: 0;
+                z-index: 1;
+            }
+            .step.visible .icon-container {
+                transform: scale(1);
+                animation: iconGlow 2.5s ease-in-out 1s infinite;
+            }
+
+            /* Card: chiếm phần chiều rộng còn lại */
+            .step .content {
+                flex: 1;
+                width: auto;
+                margin: 0 !important;
+                padding: 14px 16px;
+                border-left: 4px solid #3498db !important;
+                border-radius: 12px;
+            }
+            .step:nth-child(even) .content {
+                border-left: 4px solid #2ecc71 !important;
+            }
+
+            .step-title {
+                font-size: 0.95em;
+            }
+            .step-desc {
+                font-size: 0.88em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.15em;
+            }
+            .container {
+                padding: 16px 12px;
+            }
+            .step {
+                gap: 10px;
+            }
+            .step .content {
+                padding: 12px;
+            }
+        }
     </style>
 </head>
 <body>
